@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/museomap/precache-manifest.a493403f84f54a72132b0d112e73a5ee.js"
+  "/museomap/precache-manifest.998e0ba89e91523d3d52715af2f5558c.js"
 );
 
 workbox.clientsClaim();
