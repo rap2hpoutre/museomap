@@ -7,6 +7,8 @@ interface Props {
 }
 
 const imgUrl = "http://www2.culture.gouv.fr/documentation/museo";
+const museoUrl =
+  "http://www2.culture.gouv.fr/public/mistral/museo_fr?ACTION=CHERCHER&FIELD_98=REF&VALUE_98=";
 
 const withHttp = (url: string) =>
   !/^https?:\/\//i.test(url) ? `http://${url}` : url;
@@ -18,7 +20,7 @@ class MuseoMarker extends Component<Props> {
   componentWillMount() {
     const m: Museo = this.props.item;
     const img: string = m.VIDEO ? `${imgUrl}${m.VIDEO.split(";")[0]}` : "";
-    this.setState({hasImg: img !== "" && !img.match(/logo8-v/g)})
+    this.setState({ hasImg: img !== "" && !img.match(/logo8-v/g) });
   }
   imgDesc() {
     const m: Museo = this.props.item;
@@ -35,18 +37,30 @@ class MuseoMarker extends Component<Props> {
     }
   }
   alert = () => {
-    this.setState({hasImg: false})
-  }
+    this.setState({ hasImg: false });
+  };
   img(img: string) {
     return <img className="picto-musee" onError={this.alert} src={img} />;
   }
   desc() {
-    const text = (this.props.item.ATOUT || this.props.item.INTERET)
-      .substring(0, 400)
+    const length = this.state.hasImg ? 200 : 400;
+    let text = (this.props.item.ATOUT || this.props.item.INTERET)
       .replace(/#/g, "\n")
       .replace(/&quot;/g, '"')
       .replace(/\u0092/g, "'");
-    return <p className="description">{text}</p>;
+    if (text.length > length) {
+      text = text.substring(0, length) + "…";
+    }
+    return (
+      <p className="description">
+        {text}
+        <br />
+        <a target="_blank" href={museoUrl + this.props.item.REF}>
+          {" "}
+          En savoir plus
+        </a>
+      </p>
+    );
   }
   phone() {
     const phoneNumber = this.props.item.TEL_M.replace(
@@ -59,7 +73,7 @@ class MuseoMarker extends Component<Props> {
     return (
       <span>
         Tél :{" "}
-        <a href={`tel:${phoneNumber.replace("/\s/g", "")}`}>{phoneNumber}</a>
+        <a href={`tel:${phoneNumber.replace("/s/g", "")}`}>{phoneNumber}</a>
       </span>
     );
   }
@@ -76,17 +90,24 @@ class MuseoMarker extends Component<Props> {
       </span>
     );
   }
+  site() {
+    const m: Museo = this.props.item;
+    if (!m.URL_M) {
+      return <span />;
+    }
+    return (
+      <span>
+        Site : <a href={withHttp(m.URL_M)}>{m.URL_M.substring(0, 20) + "…"}</a>
+      </span>
+    );
+  }
   contact() {
     const m: Museo = this.props.item;
     return (
       <address>
         {this.address()}
         <div className="left-50">{this.phone()}</div>
-        <div className="right-50">
-          Site :{" "}
-          <a href={withHttp(m.URL_M)}>{m.URL_M.substring(0, 20) + "…"}</a>
-        </div>
-        <br />
+        <div className="right-50">{this.site()}</div>
       </address>
     );
   }
