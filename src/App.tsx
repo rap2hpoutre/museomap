@@ -10,7 +10,7 @@ class App extends Component {
     data: [] as Array<Museo>
   };
   componentDidMount() {
-    fetch("/museo.json")
+    fetch(process.env.PUBLIC_URL + "/museo.json")
       .then(response => response.json())
       .then(data => {
         this.setState({ data });
