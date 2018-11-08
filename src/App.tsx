@@ -10,14 +10,14 @@ class App extends Component {
     data: [] as Array<Museo>
   };
   componentDidMount() {
-    fetch(process.env.PUBLIC_URL + "/museo.json")
+    fetch(process.env.PUBLIC_URL + "/museo2.json")
       .then(response => response.json())
       .then(data => {
         this.setState({ data });
       });
   }
   markers() {
-    return this.state.data.map(d => <MuseoMarker key={d.REF} item={d} />);
+    return this.state.data.map(d => <MuseoMarker key={d.id} item={d} />);
   }
   render() {
     return (
